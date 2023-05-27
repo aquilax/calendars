@@ -1,13 +1,15 @@
-package calendar
+// pax implement functions to work with Calendar
+package pax
 
 import "time"
 
-// PaxCalendar is a calendar as defined in https://en.wikipedia.org/wiki/Pax_Calendar
-type PaxCalendar struct {
+// Calendar is a calendar proposal as defined in https://en.wikipedia.org/wiki/Pax_Calendar
+type Calendar struct {
 	t time.Time
 }
 
-type PaxMonth int
+// Month represents a Calendar month
+type Month int
 
 const (
 	standardYearDays = 364
@@ -19,7 +21,7 @@ var monthLengthsStandard = []int{28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,
 var monthLengthsLeap = []int{28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 7, 28}
 
 const (
-	January PaxMonth = 1 + iota
+	January Month = 1 + iota
 	February
 	March
 	April
@@ -35,7 +37,8 @@ const (
 	December
 )
 
-func New(year int, month PaxMonth, day int) *PaxCalendar {
+// NewCalendar returns new Calendar, given Pax date
+func New(year int, month Month, day int) *Calendar {
 	days := day - 1
 	for y := startDate.Year(); y < year; y++ {
 		if isLeapYear(y) {
@@ -52,33 +55,34 @@ func New(year int, month PaxMonth, day int) *PaxCalendar {
 		days += monthLengths[m]
 	}
 	t := startDate.Add(time.Hour * time.Duration(24*days))
-	return &PaxCalendar{t}
+	return &Calendar{t}
 }
 
-func NewFromTime(t time.Time) *PaxCalendar {
-	return &PaxCalendar{t}
+// NewCalendarFromTime creates new Calendar from Gregorian time
+func NewFromTime(t time.Time) *Calendar {
+	return &Calendar{t}
 }
 
-func Now() *PaxCalendar {
-	return &PaxCalendar{time.Now()}
-}
-
-func (p *PaxCalendar) Year() (year int) {
+// Year returns the Calendar year
+func (p *Calendar) Year() (year int) {
 	y, _, _ := p.Date()
 	return y
 }
 
-func (p *PaxCalendar) Day() (day int) {
+// Day returns the Calendar day of the month
+func (p *Calendar) Day() (day int) {
 	_, _, d := p.Date()
 	return d
 }
 
-func (p *PaxCalendar) Month() (month PaxMonth) {
+// Month returns the Calendar month
+func (p *Calendar) Month() (month Month) {
 	_, m, _ := p.Date()
 	return m
 }
 
-func (p *PaxCalendar) Date() (year int, month PaxMonth, day int) {
+// Date returns the current Calendar year, month and day
+func (p *Calendar) Date() (year int, month Month, day int) {
 	s, l := fullYearsSince(p.t)
 	year = startDate.Year() + s + l
 
@@ -101,7 +105,8 @@ func (p *PaxCalendar) Date() (year int, month PaxMonth, day int) {
 	return year, month, day
 }
 
-func (p *PaxCalendar) YearDay() (day int) {
+// YearDay returns the Calendar day of the year
+func (p *Calendar) YearDay() (day int) {
 	return int(p.t.Sub(startOfYear(p.t)).Hours() / 24)
 }
 
@@ -112,6 +117,10 @@ func isLeapYear(year int) bool {
 	lastTwo := year % 100
 
 	return lastTwo%6 == 0 || lastTwo == 0 || lastTwo == 99
+}
+
+func (p *Calendar) IsLeapYear() bool {
+	return isLeapYear(p.t.Year())
 }
 
 func daysSince(t time.Time) int {
