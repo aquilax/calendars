@@ -62,8 +62,7 @@ func (p *PaxCalendar) Date() (year int, month PaxMonth, day int) {
 }
 
 func (p *PaxCalendar) YearDay() (day int) {
-	// TODO: implementation
-	return 0
+	return int(p.t.Sub(startOfYear(p.t)).Hours() / 24)
 }
 
 func isLeapYear(year int) bool {

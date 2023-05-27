@@ -198,7 +198,16 @@ func Test_daysSince(t *testing.T) {
 		args args
 		want int
 	}{
-		// TODO: Add test cases.
+		{
+			"1928-01-01",
+			args{date(1928, time.January, 1)},
+			0,
+		},
+		{
+			"1929-01-01",
+			args{date(1929, time.January, 1)},
+			366,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
