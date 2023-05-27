@@ -1,4 +1,4 @@
-package calendar
+package pax
 
 import (
 	"reflect"
@@ -13,18 +13,18 @@ func date(year int, month time.Month, date int) time.Time {
 func TestNew(t *testing.T) {
 	type args struct {
 		year  int
-		month PaxMonth
+		month Month
 		day   int
 	}
 	tests := []struct {
 		name string
 		args args
-		want *PaxCalendar
+		want *Calendar
 	}{
 		{
 			"1928-01-01",
 			args{1928, January, 1},
-			&PaxCalendar{date(1928, time.January, 1)},
+			&Calendar{date(1928, time.January, 1)},
 		},
 	}
 	for _, tt := range tests {
@@ -43,12 +43,12 @@ func TestNewFromTime(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want *PaxCalendar
+		want *Calendar
 	}{
 		{
 			"1928-01-01",
 			args{date(1928, time.January, 1)},
-			&PaxCalendar{date(1928, time.January, 1)},
+			&Calendar{date(1928, time.January, 1)},
 		},
 	}
 	for _, tt := range tests {
@@ -60,7 +60,7 @@ func TestNewFromTime(t *testing.T) {
 	}
 }
 
-func TestPaxCalendar_Year(t *testing.T) {
+func TestCalendar_Year(t *testing.T) {
 	type fields struct {
 		t time.Time
 	}
@@ -77,24 +77,24 @@ func TestPaxCalendar_Year(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &PaxCalendar{
+			p := &Calendar{
 				t: tt.fields.t,
 			}
 			if gotYear := p.Year(); gotYear != tt.wantYear {
-				t.Errorf("PaxCalendar.Year() = %v, want %v", gotYear, tt.wantYear)
+				t.Errorf("Calendar.Year() = %v, want %v", gotYear, tt.wantYear)
 			}
 		})
 	}
 }
 
-func TestPaxCalendar_Month(t *testing.T) {
+func TestCalendar_Month(t *testing.T) {
 	type fields struct {
 		t time.Time
 	}
 	tests := []struct {
 		name      string
 		fields    fields
-		wantMonth PaxMonth
+		wantMonth Month
 	}{
 		{
 			"1928-01-01",
@@ -114,17 +114,17 @@ func TestPaxCalendar_Month(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &PaxCalendar{
+			p := &Calendar{
 				t: tt.fields.t,
 			}
 			if gotMonth := p.Month(); gotMonth != tt.wantMonth {
-				t.Errorf("PaxCalendar.Month() = %v, want %v", gotMonth, tt.wantMonth)
+				t.Errorf("Calendar.Month() = %v, want %v", gotMonth, tt.wantMonth)
 			}
 		})
 	}
 }
 
-func TestPaxCalendar_Date(t *testing.T) {
+func TestCalendar_Date(t *testing.T) {
 	type fields struct {
 		t time.Time
 	}
@@ -132,7 +132,7 @@ func TestPaxCalendar_Date(t *testing.T) {
 		name      string
 		fields    fields
 		wantYear  int
-		wantMonth PaxMonth
+		wantMonth Month
 		wantDay   int
 	}{
 		{
@@ -145,24 +145,24 @@ func TestPaxCalendar_Date(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &PaxCalendar{
+			p := &Calendar{
 				t: tt.fields.t,
 			}
 			gotYear, gotMonth, gotDay := p.Date()
 			if gotYear != tt.wantYear {
-				t.Errorf("PaxCalendar.Date() gotYear = %v, want %v", gotYear, tt.wantYear)
+				t.Errorf("Calendar.Date() gotYear = %v, want %v", gotYear, tt.wantYear)
 			}
 			if gotMonth != tt.wantMonth {
-				t.Errorf("PaxCalendar.Date() gotMonth = %v, want %v", gotMonth, tt.wantMonth)
+				t.Errorf("Calendar.Date() gotMonth = %v, want %v", gotMonth, tt.wantMonth)
 			}
 			if gotDay != tt.wantDay {
-				t.Errorf("PaxCalendar.Date() gotDay = %v, want %v", gotDay, tt.wantDay)
+				t.Errorf("Calendar.Date() gotDay = %v, want %v", gotDay, tt.wantDay)
 			}
 		})
 	}
 }
 
-func TestPaxCalendar_YearDay(t *testing.T) {
+func TestCalendar_YearDay(t *testing.T) {
 	type fields struct {
 		t time.Time
 	}
@@ -189,11 +189,11 @@ func TestPaxCalendar_YearDay(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &PaxCalendar{
+			p := &Calendar{
 				t: tt.fields.t,
 			}
 			if gotDay := p.YearDay(); gotDay != tt.wantDay {
-				t.Errorf("PaxCalendar.YearDay() = %v, want %v", gotDay, tt.wantDay)
+				t.Errorf("Calendar.YearDay() = %v, want %v", gotDay, tt.wantDay)
 			}
 		})
 	}
@@ -324,7 +324,7 @@ func Test_startOfYear(t *testing.T) {
 	}
 }
 
-func TestPaxCalendar_Day(t *testing.T) {
+func TestCalendar_Day(t *testing.T) {
 	type fields struct {
 		t time.Time
 	}
@@ -356,11 +356,11 @@ func TestPaxCalendar_Day(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := &PaxCalendar{
+			p := &Calendar{
 				t: tt.fields.t,
 			}
 			if gotDay := p.Day(); gotDay != tt.wantDay {
-				t.Errorf("PaxCalendar.Day() = %v, want %v", gotDay, tt.wantDay)
+				t.Errorf("Calendar.Day() = %v, want %v", gotDay, tt.wantDay)
 			}
 		})
 	}
