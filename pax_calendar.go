@@ -15,6 +15,8 @@ const (
 )
 
 var startDate = time.Date(1928, time.January, 1, 0, 0, 0, 0, time.UTC)
+var monthLengthsStandard = []int{28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 0, 28}
+var monthLengthsLeap = []int{28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 7, 28}
 
 const (
 	January PaxMonth = 1 + iota
@@ -47,18 +49,41 @@ func Now() *PaxCalendar {
 }
 
 func (p *PaxCalendar) Year() (year int) {
-	// TODO: implementation
-	return 0
+	y, _, _ := p.Date()
+	return y
+}
+
+func (p *PaxCalendar) Day() (day int) {
+	_, _, d := p.Date()
+	return d
 }
 
 func (p *PaxCalendar) Month() (month PaxMonth) {
-	// TODO: implementation
-	return 0
+	_, m, _ := p.Date()
+	return m
 }
 
 func (p *PaxCalendar) Date() (year int, month PaxMonth, day int) {
-	// TODO: implementation
-	return 0, 0, 0
+	s, l := fullYearsSince(p.t)
+	year = startDate.Year() + s + l
+
+	yearDay := p.YearDay()
+	month = 1
+	day = 1
+	monthLengths := monthLengthsStandard
+	if isLeapYear(year) {
+		monthLengths = monthLengthsLeap
+	}
+	for {
+		yearDay -= monthLengths[month-1]
+		if yearDay < 0 {
+			day = yearDay + monthLengths[month-1] + 1
+			break
+		}
+		month++
+	}
+
+	return year, month, day
 }
 
 func (p *PaxCalendar) YearDay() (day int) {
@@ -66,7 +91,12 @@ func (p *PaxCalendar) YearDay() (day int) {
 }
 
 func isLeapYear(year int) bool {
-	return year%100 == 99 || year%6 == 0 || year%400 == 0
+	if year%400 == 0 {
+		return false
+	}
+	lastTwo := year % 100
+
+	return lastTwo%6 == 0 || lastTwo == 0 || lastTwo == 99
 }
 
 func daysSince(t time.Time) int {
@@ -94,7 +124,7 @@ func fullYearsSince(t time.Time) (standardYears int, leapYears int) {
 			standardYears++
 		}
 	}
-	return
+	return standardYears, leapYears
 }
 
 func startOfYear(t time.Time) time.Time {

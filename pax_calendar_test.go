@@ -100,7 +100,21 @@ func TestPaxCalendar_Month(t *testing.T) {
 		fields    fields
 		wantMonth PaxMonth
 	}{
-		// TODO: Add test cases.
+		{
+			"1928-01-01",
+			fields{date(1928, time.January, 1)},
+			January,
+		},
+		{
+			"1928-01-28",
+			fields{date(1928, time.January, 28)},
+			January,
+		},
+		{
+			"1928-01-29",
+			fields{date(1928, time.January, 29)},
+			February,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -156,6 +170,21 @@ func TestPaxCalendar_YearDay(t *testing.T) {
 		wantDay int
 	}{
 		// TODO: Add test cases.
+		{
+			"1928-01-01",
+			fields{date(1928, time.January, 1)},
+			0,
+		},
+		{
+			"1929-01-01",
+			fields{date(1929, time.January, 1)},
+			2,
+		},
+		{
+			"2023-05-25",
+			fields{date(2023, time.May, 27)},
+			153,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -243,8 +272,8 @@ func Test_fullYearsSince(t *testing.T) {
 		{
 			"2023-05-25",
 			args{date(2023, time.May, 27)},
-			77,
-			18,
+			79,
+			16,
 		},
 	}
 	for _, tt := range tests {
@@ -282,13 +311,55 @@ func Test_startOfYear(t *testing.T) {
 		{
 			"2023-05-25",
 			args{date(2023, time.May, 27)},
-			date(2023, time.January, 8),
+			date(2022, time.December, 25),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := startOfYear(tt.args.t); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("startOfYear() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPaxCalendar_Day(t *testing.T) {
+	type fields struct {
+		t time.Time
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		wantDay int
+	}{
+		{
+			"1928-01-01",
+			fields{date(1928, time.January, 1)},
+			1,
+		},
+		{
+			"1928-01-28",
+			fields{date(1928, time.January, 28)},
+			28,
+		},
+		{
+			"1928-01-29",
+			fields{date(1928, time.January, 29)},
+			1,
+		},
+		{
+			"1928-03-03",
+			fields{date(1928, time.March, 3)},
+			7,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := &PaxCalendar{
+				t: tt.fields.t,
+			}
+			if gotDay := p.Day(); gotDay != tt.wantDay {
+				t.Errorf("PaxCalendar.Day() = %v, want %v", gotDay, tt.wantDay)
 			}
 		})
 	}
