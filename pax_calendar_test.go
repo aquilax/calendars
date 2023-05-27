@@ -21,7 +21,11 @@ func TestNew(t *testing.T) {
 		args args
 		want *PaxCalendar
 	}{
-		// TODO: Add test cases.
+		{
+			"1928-01-01",
+			args{1928, January, 1},
+			&PaxCalendar{date(1928, time.January, 1)},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -41,28 +45,16 @@ func TestNewFromTime(t *testing.T) {
 		args args
 		want *PaxCalendar
 	}{
-		// TODO: Add test cases.
+		{
+			"1928-01-01",
+			args{date(1928, time.January, 1)},
+			&PaxCalendar{date(1928, time.January, 1)},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := NewFromTime(tt.args.t); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewFromTime() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestNow(t *testing.T) {
-	tests := []struct {
-		name string
-		want *PaxCalendar
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := Now(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Now() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -77,7 +69,11 @@ func TestPaxCalendar_Year(t *testing.T) {
 		fields   fields
 		wantYear int
 	}{
-		// TODO: Add test cases.
+		{
+			"1928-01-01",
+			fields{date(1928, time.January, 1)},
+			1928,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -139,7 +135,13 @@ func TestPaxCalendar_Date(t *testing.T) {
 		wantMonth PaxMonth
 		wantDay   int
 	}{
-		// TODO: Add test cases.
+		{
+			"1928-01-01",
+			fields{date(1928, time.January, 1)},
+			1928,
+			January,
+			1,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -169,7 +171,6 @@ func TestPaxCalendar_YearDay(t *testing.T) {
 		fields  fields
 		wantDay int
 	}{
-		// TODO: Add test cases.
 		{
 			"1928-01-01",
 			fields{date(1928, time.January, 1)},

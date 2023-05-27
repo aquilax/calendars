@@ -36,8 +36,23 @@ const (
 )
 
 func New(year int, month PaxMonth, day int) *PaxCalendar {
-	// TODO: implementation
-	return &PaxCalendar{}
+	days := day - 1
+	for y := startDate.Year(); y < year; y++ {
+		if isLeapYear(y) {
+			days += leapYearDays
+		} else {
+			days += standardYearDays
+		}
+	}
+	monthLengths := monthLengthsStandard
+	if isLeapYear(year) {
+		monthLengths = monthLengthsLeap
+	}
+	for m := 0; m < int(month)-1; m++ {
+		days += monthLengths[m]
+	}
+	t := startDate.Add(time.Hour * time.Duration(24*days))
+	return &PaxCalendar{t}
 }
 
 func NewFromTime(t time.Time) *PaxCalendar {
